@@ -10345,7 +10345,7 @@ struct mydsp : public dsp {
 	float fRec0[2];
 	FAUSTFLOAT fButton0;
 	int IOTA0;
-	float fVec0[1048576];
+	float fVec0[32768];
 	int iVec1[2];
 	int iRec2[2];
 	float fRec1[2];
@@ -10402,7 +10402,7 @@ struct mydsp : public dsp {
 			fRec0[l0] = 0.0f;
 		}
 		IOTA0 = 0;
-		for (int l1 = 0; l1 < 1048576; l1 = l1 + 1) {
+		for (int l1 = 0; l1 < 32768; l1 = l1 + 1) {
 			fVec0[l1] = 0.0f;
 		}
 		for (int l2 = 0; l2 < 2; l2 = l2 + 1) {
@@ -10451,10 +10451,10 @@ struct mydsp : public dsp {
 		int iSlow3 = static_cast<int>(fSlow1);
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
 			fRec0[0] = fSlow0 + fConst1 * fRec0[1];
-			fVec0[IOTA0 & 1048575] = fSlow2 * fRec1[1] + fSlow1 * static_cast<float>(input0[i0]);
+			fVec0[IOTA0 & 32767] = fSlow2 * fRec1[1] + fSlow1 * static_cast<float>(input0[i0]);
 			iVec1[0] = iSlow3;
 			iRec2[0] = (iSlow3 + iRec2[1]) * ((iSlow3 - iVec1[1]) <= 0);
-			fRec1[0] = fVec0[(IOTA0 - std::min<int>(524288, std::max<int>(0, iRec2[0] + -1))) & 1048575];
+			fRec1[0] = fVec0[(IOTA0 - static_cast<int>(std::min<float>(2.205e+04f, static_cast<float>(std::max<int>(0, iRec2[0] + -1))))) & 32767];
 			output0[i0] = static_cast<FAUSTFLOAT>(fRec1[0] * fRec0[0]);
 			fRec0[1] = fRec0[0];
 			IOTA0 = IOTA0 + 1;

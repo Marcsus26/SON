@@ -1,13 +1,20 @@
 #include <Audio.h>
 #include <Bounce.h>
 #include "capture.h"
+#include <Wire.h>
+#include <SPI.h>
+#include <SD.h>
+#include <SerialFlash.h>
 
 capture capture;
 AudioInputI2S in;
 AudioOutputI2S out;
 AudioControlSGTL5000 audioShield;
-AudioConnection patchCord0(capture,0,out,0);
-AudioConnection patchCord1(capture,0,out,1);
+AudioConnection patchCord1(in, 0, capture, 0);
+AudioConnection patchCord3(capture, 0, out, 0);
+AudioConnection patchCord4(capture, 0, out, 1);
+
+
 
 Bounce boutonCapture = Bounce(0, 10);
 
@@ -19,6 +26,7 @@ void setup() {
   audioShield.inputSelect(AUDIO_INPUT_MIC);
   audioShield.micGain(10); // in dB
   audioShield.volume(1);
+  capture.setParamValue("level (db)", 4.0);
 }
 
 void loop() {
@@ -26,20 +34,17 @@ void loop() {
   boutonCapture.update();
 
   // B. Si le bouton a changé d'état (Appuyé ou Relâché)
-  if (boutonCapture.fallingEdge()) {
+  if (boutonCapture.risingEdge()) {
     // Falling Edge = Passage de 3.3V à 0V = APPUI
     // On envoie "1.0" au paramètre Faust
     capture.setParamValue("Capture", 1.0);
     Serial.println("Capture ON");
   }
   
-  if (boutonCapture.risingEdge()) {
+  if (boutonCapture.fallingEdge()) {
     // Rising Edge = Passage de 0V à 3.3V = RELACHÉ
     // On envoie "0.0" au paramètre Faust
     capture.setParamValue("Capture", 0.0);
     Serial.println("Capture OFF");
   }
-  
-  // Note: setParamValue prend en 1er argument le "Chemin" du widget Faust
-
 }
