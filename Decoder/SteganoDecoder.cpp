@@ -10457,7 +10457,7 @@ struct mydsp : public dsp {
 	virtual void instanceConstants(int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<float>(1.92e+05f, std::max<float>(1.0f, static_cast<float>(fSampleRate)));
-		fConst1 = std::tan(9424.778f / fConst0);
+		fConst1 = std::tan(6283.1855f / fConst0);
 		fConst2 = 2.0f * (1.0f - 1.0f / mydsp_faustpower2_f(fConst1));
 		fConst3 = 1.0f / fConst1;
 		fConst4 = (fConst3 + -0.76536685f) / fConst1 + 1.0f;
@@ -10465,8 +10465,8 @@ struct mydsp : public dsp {
 		fConst6 = 1.0f / fConst5;
 		fConst7 = (fConst3 + -1.847759f) / fConst1 + 1.0f;
 		fConst8 = 1.0f / ((fConst3 + 1.847759f) / fConst1 + 1.0f);
-		fConst9 = 1.9e+04f / fConst0;
-		fConst10 = std::tan(59690.26f / fConst0);
+		fConst9 = 1.5e+04f / fConst0;
+		fConst10 = std::tan(47123.89f / fConst0);
 		fConst11 = 2.0f * (1.0f - 1.0f / mydsp_faustpower2_f(fConst10));
 		fConst12 = 1.0f / fConst10;
 		fConst13 = (fConst12 + -0.05f) / fConst10 + 1.0f;
