@@ -2,32 +2,34 @@
 #include <Bounce.h>
 #include <Wire.h>
 #include <SPI.h>
-#include <SD.h>
 #include <SerialFlash.h>
+#include "SDRecRead.h"
+#include "steganophone.h"
 
+SDRecRead sDRecRead;
+steganophone steganophone; 
 AudioInputI2S in;
 AudioOutputI2S out;
-AudioControlSGTL5000 audioShield;
-AudioAnalyzePeak peak1;
-AudioRecordQueue queue1;         
-AudioPlaySdRaw playRaw1;       
-AudioConnection patchCord1(in, 0, queue1, 0);
-AudioConnection patchCord2(in, 0, peak1, 0);
-AudioConnection patchCord3(playRaw1, 0, out, 0);
-AudioConnection patchCord4(playRaw1, 0, out, 1);
+AudioControlSGTL5000 audioShield;    
+AudioConnection patchCord1(in, 0, sDRecRead.queue1, 0);
+AudioConnection patchCord2(in, 0, sDRecRead.peak1, 0);
+AudioConnection patchCord3(sDRecRead.playWav2, 0, steganophone, 0);
+//AudioConnection patchCord4(sDRecRead.playWav2, 1, steganophone, 0);
+AudioConnection patchCord5(sDRecRead.playWav1,   0, steganophone, 1);
+//AudioConnection patchCord6(sDRecRead.playWav1,   1, steganophone, 1);
+AudioConnection patchCord7(steganophone, 0, sDRecRead.queueOutput, 0);
 
 #define SDCARD_CS_PIN    10
 #define SDCARD_MOSI_PIN  11   // Teensy 4 ignores this, uses pin 11
 #define SDCARD_SCK_PIN   13  // Teensy 4 ignores this, uses pin 13
 
 Bounce boutonCapture = Bounce(0, 10);
-int mode = 0;
-File frec;
 
 void setup() {
   Serial.begin(9600);
   pinMode(0, INPUT_PULLUP);
-  AudioMemory(60);
+  Serial.println("Hello");
+  AudioMemory(200);
   audioShield.enable();
   audioShield.inputSelect(AUDIO_INPUT_MIC);
   audioShield.micGain(10); // in dB
@@ -49,101 +51,58 @@ void loop() {
 
   // Respond to button presses
   if (boutonCapture.fallingEdge()) {
-    if (mode == 0) {
+    if (sDRecRead.mode == 0) {
+      sDRecRead.playWav2.stop();
       Serial.println("Started recording");
-      startRecording();
+      sDRecRead.startRecording();
     }
     else { 
-      if (mode == 1) {
+      if (sDRecRead.mode == 1) {
         Serial.println("Stopped recording");
-        stopRecording();
-    }
-    else {
-      if (mode == 2) {
-        Serial.println("Started playing");
-        startPlaying();
+        sDRecRead.stopRecording();
+        delay(100);
+        sDRecRead.startEncoding();
     }
     }
     }
+    if (sDRecRead.mode == 1) {
+      sDRecRead.continueRecording();
   }
-  if (mode == 1) {
-    continueRecording();
-  }
-  if (mode == 3) {
-    continuePlaying();
-  }
-}
+  if (sDRecRead.isEncoding) {
 
-void startRecording() {
-  if (SD.exists("RECORD.RAW")) {
-    // The SD library writes new data to the end of the
-    // file, so to start a new recording, the old file
-    // must be deleted before new data is written.
-    SD.remove("RECORD.RAW");
-  }
-  frec = SD.open("RECORD.RAW", FILE_WRITE);
-  if (frec) {
-    queue1.begin();
-    mode = 1;
-  }
-}
+    if (sDRecRead.queueOutput.available() >= 4) {
+        byte tempBuffer[1024]; 
 
-void continueRecording() {
-  if (queue1.available() >= 2) {
-    byte buffer[512];
-    // Fetch 2 blocks from the audio library and copy
-    // into a 512 byte buffer.  The Arduino SD library
-    // is most efficient when full 512 byte sector size
-    // writes are used.
-    memcpy(buffer, queue1.readBuffer(), 256);
-    queue1.freeBuffer();
-    memcpy(buffer+256, queue1.readBuffer(), 256);
-    queue1.freeBuffer();
-    // write all 512 bytes to the SD card
-    //elapsedMicros usec = 0;
-    frec.write(buffer, 512);
-    // Uncomment these lines to see how long SD writes
-    // are taking.  A pair of audio blocks arrives every
-    // 5802 microseconds, so hopefully most of the writes
-    // take well under 5802 us.  Some will take more, as
-    // the SD library also must write to the FAT tables
-    // and the SD card controller manages media erase and
-    // wear leveling.  The queue1 object can buffer
-    // approximately 301700 us of audio, to allow time
-    // for occasional high SD card latency, as long as
-    // the average write time is under 5802 us.
-    //Serial.print("SD write, us=");
-    //Serial.println(usec);
-  }
-}
+        for (int i = 0; i < 4; i++) {
+            memcpy(tempBuffer + (i * 256), sDRecRead.queueOutput.readBuffer(), 256);
+            sDRecRead.queueOutput.freeBuffer();
+        }
 
-void stopRecording() {
-  queue1.end();
-  if (mode == 1) {
-    while (queue1.available() > 0) {
-      frec.write((byte*)queue1.readBuffer(), 256);
-      queue1.freeBuffer();
+        // On écrit et on vérifie l'usage mémoire
+        sDRecRead.fileStego.write(tempBuffer, 1024);
+        }
+      // 2. Vérification de la fin (DÉPLACÉ ICI)
+      // On vérifie si les fichiers ont fini de jouer UNIQUEMENT si on est en train d'encoder
+      if (!sDRecRead.playWav2.isPlaying() || !sDRecRead.playWav1.isPlaying()) {
+          sDRecRead.playWav1.stop();
+          delay(100);
+          sDRecRead.playWav2.stop();
+        Serial.println("Fin de lecture détectée, fermeture du fichier.");
+        AudioNoInterrupts();
+        sDRecRead.stopEncoding(); // Ici isEncoding repasse à false, arrêtant ce bloc
+        AudioInterrupts();
+        // PETIT DELAI DE SECURITE
+        delay(200); 
+        
+        // RÉOUVERTURE POUR HEADER
+        File f = SD.open("STEGO.WAV", FILE_WRITE);
+        if (f) {
+            Serial.println("Mise à jour du header WAV...");
+            unsigned long fileSize = f.size();
+            sDRecRead.writeWavHeader(f, fileSize); 
+            f.close();
+            Serial.println("Encodage terminé proprement !");
+        }
+      }
     }
-    frec.close();
   }
-  mode = 2;
-}
-
-
-void startPlaying() {
-  playRaw1.play("RECORD.RAW");
-  mode = 3;
-}
-
-void continuePlaying() {
-  if (!playRaw1.isPlaying()) {
-    playRaw1.stop();
-    mode = 0;
-  }
-}
-
-void stopPlaying() {
-  Serial.println("stopPlaying");
-  if (mode == 2) playRaw1.stop();
-  mode = 0;
-}
