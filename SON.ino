@@ -15,6 +15,8 @@ AudioConnection patchCord1(in, 0, sDRecRead.queue1, 0);
 AudioConnection patchCord2(in, 0, sDRecRead.peak1, 0);
 AudioConnection patchCord3(sDRecRead.playWav2, 0, steganophone, 0);
 //AudioConnection patchCord4(sDRecRead.playWav2, 1, steganophone, 0);
+//Avec IN stegano ça MARCHE
+//AudioConnection patchCord5(in,   0, steganophone, 1);
 AudioConnection patchCord5(sDRecRead.playWav1,   0, steganophone, 1);
 //AudioConnection patchCord6(sDRecRead.playWav1,   1, steganophone, 1);
 AudioConnection patchCord7(steganophone, 0, sDRecRead.queueOutput, 0);
@@ -79,11 +81,14 @@ void loop() {
         }
 
         // On écrit et on vérifie l'usage mémoire
+        AudioNoInterrupts();
         sDRecRead.fileStego.write(tempBuffer, 1024);
+        AudioInterrupts();
         }
+        
       // 2. Vérification de la fin (DÉPLACÉ ICI)
       // On vérifie si les fichiers ont fini de jouer UNIQUEMENT si on est en train d'encoder
-      if (!sDRecRead.playWav2.isPlaying() || !sDRecRead.playWav1.isPlaying()) {
+      if (!sDRecRead.playWav2.isPlaying()) {
           sDRecRead.playWav1.stop();
           delay(100);
           sDRecRead.playWav2.stop();

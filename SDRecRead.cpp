@@ -126,6 +126,7 @@ void SDRecRead::startEncoding() {
     if (playWav1.play("RECORD.WAV")) {
       Serial.println("Record OK");
     }
+    delay(10);
     isEncoding = true;
   } else {
     Serial.println("Erreur fatale : Impossible d'ouvrir le fichier d'écriture !");

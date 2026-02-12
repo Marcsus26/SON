@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------
-name: "steganophone"
+name: "SteganoDecoder"
 Code generated with Faust 2.81.10 (https://faust.grame.fr)
 Compilation options: -a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -uim -single -ftz 0
 ------------------------------------------------------------ */
@@ -44,7 +44,7 @@ Compilation options: -a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -c
 
 #include <string.h> // for memset
 
-#include "steganophone.h"
+#include "SteganoDecoder.h"
 
 // IMPORTANT: in order for MapUI to work, the teensy linker must be g++
 /************************** BEGIN MapUI.h ******************************
@@ -10332,8 +10332,8 @@ struct dsp_poly_factory : public dsp_factory {
 #endif
 
 struct mydspSIG0 {
-	int iVec0[2];
-	int iRec0[2];
+	int iVec1[2];
+	int iRec2[2];
 	
 	int getNumInputsmydspSIG0() {
 		return 0;
@@ -10343,21 +10343,21 @@ struct mydspSIG0 {
 	}
 	
 	void instanceInitmydspSIG0(int sample_rate) {
-		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
-			iVec0[l0] = 0;
-		}
 		for (int l1 = 0; l1 < 2; l1 = l1 + 1) {
-			iRec0[l1] = 0;
+			iVec1[l1] = 0;
+		}
+		for (int l2 = 0; l2 < 2; l2 = l2 + 1) {
+			iRec2[l2] = 0;
 		}
 	}
 	
 	void fillmydspSIG0(int count, float* table) {
 		for (int i1 = 0; i1 < count; i1 = i1 + 1) {
-			iVec0[0] = 1;
-			iRec0[0] = (iVec0[1] + iRec0[1]) % 65536;
-			table[i1] = std::sin(9.58738e-05f * static_cast<float>(iRec0[0]));
-			iVec0[1] = iVec0[0];
-			iRec0[1] = iRec0[0];
+			iVec1[0] = 1;
+			iRec2[0] = (iVec1[1] + iRec2[1]) % 65536;
+			table[i1] = std::sin(9.58738e-05f * static_cast<float>(iRec2[0]));
+			iVec1[1] = iVec1[0];
+			iRec2[1] = iRec2[0];
 		}
 	}
 
@@ -10366,24 +10366,17 @@ struct mydspSIG0 {
 static mydspSIG0* newmydspSIG0() { return (mydspSIG0*)new mydspSIG0(); }
 static void deletemydspSIG0(mydspSIG0* dsp) { delete dsp; }
 
-static float ftbl0mydspSIG0[65536];
 static float mydsp_faustpower2_f(float value) {
 	return value * value;
 }
-static float mydsp_faustpower3_f(float value) {
-	return value * value * value;
-}
-static float mydsp_faustpower4_f(float value) {
-	return value * value * value * value;
-}
+static float ftbl0mydspSIG0[65536];
 
 struct mydsp : public dsp {
 	
-	int iVec1[2];
+	int iVec0[2];
 	int fSampleRate;
 	float fConst0;
 	float fConst1;
-	float fRec1[2];
 	float fConst2;
 	float fConst3;
 	float fConst4;
@@ -10392,45 +10385,18 @@ struct mydsp : public dsp {
 	float fConst7;
 	float fConst8;
 	float fConst9;
-	float fRec3[3];
-	float fRec2[3];
+	float fRec3[2];
 	float fConst10;
 	float fConst11;
 	float fConst12;
 	float fConst13;
 	float fConst14;
 	float fConst15;
+	float fRec4[3];
 	float fConst16;
+	float fRec1[3];
+	float fRec0[3];
 	float fConst17;
-	float fConst18;
-	float fConst19;
-	float fConst20;
-	float fConst21;
-	float fConst22;
-	float fConst23;
-	float fConst24;
-	float fConst25;
-	float fConst26;
-	float fConst27;
-	float fConst28;
-	float fConst29;
-	float fConst30;
-	float fConst31;
-	float fConst32;
-	float fConst33;
-	float fConst34;
-	float fConst35;
-	float fConst36;
-	float fConst37;
-	float fConst38;
-	float fRec5[5];
-	float fConst39;
-	float fConst40;
-	float fConst41;
-	float fConst42;
-	float fConst43;
-	float fConst44;
-	float fRec4[5];
 	
 	mydsp() {
 	}
@@ -10439,13 +10405,7 @@ struct mydsp : public dsp {
 		m->declare("basics.lib/name", "Faust Basic Element Library");
 		m->declare("basics.lib/version", "1.22.0");
 		m->declare("compile_options", "-a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -uim -single -ftz 0");
-		m->declare("filename", "steganophone.dsp");
-		m->declare("filters.lib/bandpass0_bandstop1:author", "Julius O. Smith III");
-		m->declare("filters.lib/bandpass0_bandstop1:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
-		m->declare("filters.lib/bandpass0_bandstop1:license", "MIT-style STK-4.3 license");
-		m->declare("filters.lib/bandstop:author", "Julius O. Smith III");
-		m->declare("filters.lib/bandstop:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
-		m->declare("filters.lib/bandstop:license", "MIT-style STK-4.3 license");
+		m->declare("filename", "SteganoDecoder.dsp");
 		m->declare("filters.lib/fir:author", "Julius O. Smith III");
 		m->declare("filters.lib/fir:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/fir:license", "MIT-style STK-4.3 license");
@@ -10458,22 +10418,22 @@ struct mydsp : public dsp {
 		m->declare("filters.lib/lowpass:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/lowpass:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/name", "Faust Filters Library");
+		m->declare("filters.lib/resonbp:author", "Julius O. Smith III");
+		m->declare("filters.lib/resonbp:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/resonbp:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/tf2:author", "Julius O. Smith III");
 		m->declare("filters.lib/tf2:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/tf2:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/tf2s:author", "Julius O. Smith III");
 		m->declare("filters.lib/tf2s:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/tf2s:license", "MIT-style STK-4.3 license");
-		m->declare("filters.lib/tf2sb:author", "Julius O. Smith III");
-		m->declare("filters.lib/tf2sb:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
-		m->declare("filters.lib/tf2sb:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/version", "1.7.1");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
 		m->declare("maths.lib/license", "LGPL with exception");
 		m->declare("maths.lib/name", "Faust Math Library");
 		m->declare("maths.lib/version", "2.9.0");
-		m->declare("name", "steganophone");
+		m->declare("name", "SteganoDecoder");
 		m->declare("oscillators.lib/name", "Faust Oscillator Library");
 		m->declare("oscillators.lib/version", "1.6.0");
 		m->declare("platform.lib/name", "Generic Platform Library");
@@ -10481,7 +10441,7 @@ struct mydsp : public dsp {
 	}
 
 	virtual int getNumInputs() {
-		return 2;
+		return 1;
 	}
 	virtual int getNumOutputs() {
 		return 1;
@@ -10497,73 +10457,43 @@ struct mydsp : public dsp {
 	virtual void instanceConstants(int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<float>(1.92e+05f, std::max<float>(1.0f, static_cast<float>(fSampleRate)));
-		fConst1 = 1.8e+04f / fConst0;
-		fConst2 = std::tan(4712.389f / fConst0);
-		fConst3 = 2.0f * (1.0f - 1.0f / mydsp_faustpower2_f(fConst2));
-		fConst4 = 1.0f / fConst2;
-		fConst5 = (fConst4 + -0.76536685f) / fConst2 + 1.0f;
-		fConst6 = (fConst4 + 0.76536685f) / fConst2 + 1.0f;
-		fConst7 = 1.0f / fConst6;
-		fConst8 = (fConst4 + -1.847759f) / fConst2 + 1.0f;
-		fConst9 = 1.0f / ((fConst4 + 1.847759f) / fConst2 + 1.0f);
-		fConst10 = 0.05f / fConst6;
-		fConst11 = std::tan(62831.85f / fConst0);
-		fConst12 = std::sqrt(4.0f * mydsp_faustpower2_f(fConst0) * std::tan(56548.668f / fConst0) * fConst11);
-		fConst13 = mydsp_faustpower2_f(fConst12);
-		fConst14 = 1.0f / fConst0;
-		fConst15 = mydsp_faustpower3_f(fConst14) * fConst13;
-		fConst16 = fConst0 * fConst11;
-		fConst17 = 2.0f * fConst16 - 0.5f * (fConst13 / fConst16);
-		fConst18 = fConst17 * (6.122935f / fConst0 + 1.5307337f * fConst15);
-		fConst19 = mydsp_faustpower2_f(fConst17);
-		fConst20 = mydsp_faustpower2_f(fConst14);
-		fConst21 = mydsp_faustpower4_f(fConst14) * mydsp_faustpower4_f(fConst12);
-		fConst22 = fConst21 + fConst20 * (4.0f * fConst19 + 8.0f * fConst13);
-		fConst23 = fConst22 + (16.0f - fConst18);
-		fConst24 = 3.0614674f * fConst15;
-		fConst25 = 12.24587f / fConst0;
-		fConst26 = 4.0f * fConst21;
-		fConst27 = fConst26 + fConst17 * (fConst25 - fConst24) + -64.0f;
-		fConst28 = 6.0f * fConst21;
-		fConst29 = fConst28 + (96.0f - fConst20 * (8.0f * fConst19 + 16.0f * fConst13));
-		fConst30 = fConst26 + fConst17 * (fConst24 - fConst25) + -64.0f;
-		fConst31 = 1.0f / (fConst22 + fConst18 + 16.0f);
-		fConst32 = fConst17 * (14.782072f / fConst0 + 3.695518f * fConst15);
-		fConst33 = fConst22 + (16.0f - fConst32);
-		fConst34 = 7.391036f * fConst15;
-		fConst35 = 29.564144f / fConst0;
-		fConst36 = fConst26 + fConst17 * (fConst35 - fConst34) + -64.0f;
-		fConst37 = fConst26 + fConst17 * (fConst34 - fConst35) + -64.0f;
-		fConst38 = 1.0f / (fConst32 + fConst22 + 16.0f);
-		fConst39 = fConst20 * fConst13;
-		fConst40 = 8.0f * fConst39;
-		fConst41 = fConst40 + 2.0f * fConst21 + 16.0f;
-		fConst42 = fConst26 + -64.0f;
-		fConst43 = fConst28 + (96.0f - 16.0f * fConst39);
-		fConst44 = fConst40 + 16.0f;
+		fConst1 = std::tan(9424.778f / fConst0);
+		fConst2 = 2.0f * (1.0f - 1.0f / mydsp_faustpower2_f(fConst1));
+		fConst3 = 1.0f / fConst1;
+		fConst4 = (fConst3 + -0.76536685f) / fConst1 + 1.0f;
+		fConst5 = (fConst3 + 0.76536685f) / fConst1 + 1.0f;
+		fConst6 = 1.0f / fConst5;
+		fConst7 = (fConst3 + -1.847759f) / fConst1 + 1.0f;
+		fConst8 = 1.0f / ((fConst3 + 1.847759f) / fConst1 + 1.0f);
+		fConst9 = 1.9e+04f / fConst0;
+		fConst10 = std::tan(59690.26f / fConst0);
+		fConst11 = 2.0f * (1.0f - 1.0f / mydsp_faustpower2_f(fConst10));
+		fConst12 = 1.0f / fConst10;
+		fConst13 = (fConst12 + -0.05f) / fConst10 + 1.0f;
+		fConst14 = (fConst12 + 0.05f) / fConst10 + 1.0f;
+		fConst15 = 1.0f / fConst14;
+		fConst16 = 1.0f / (fConst10 * fConst14);
+		fConst17 = 2e+01f / fConst5;
 	}
 	
 	virtual void instanceResetUserInterface() {
 	}
 	
 	virtual void instanceClear() {
-		for (int l2 = 0; l2 < 2; l2 = l2 + 1) {
-			iVec1[l2] = 0;
+		for (int l0 = 0; l0 < 2; l0 = l0 + 1) {
+			iVec0[l0] = 0;
 		}
 		for (int l3 = 0; l3 < 2; l3 = l3 + 1) {
-			fRec1[l3] = 0.0f;
+			fRec3[l3] = 0.0f;
 		}
 		for (int l4 = 0; l4 < 3; l4 = l4 + 1) {
-			fRec3[l4] = 0.0f;
+			fRec4[l4] = 0.0f;
 		}
 		for (int l5 = 0; l5 < 3; l5 = l5 + 1) {
-			fRec2[l5] = 0.0f;
+			fRec1[l5] = 0.0f;
 		}
-		for (int l6 = 0; l6 < 5; l6 = l6 + 1) {
-			fRec5[l6] = 0.0f;
-		}
-		for (int l7 = 0; l7 < 5; l7 = l7 + 1) {
-			fRec4[l7] = 0.0f;
+		for (int l6 = 0; l6 < 3; l6 = l6 + 1) {
+			fRec0[l6] = 0.0f;
 		}
 	}
 	
@@ -10587,35 +10517,29 @@ struct mydsp : public dsp {
 	}
 	
 	virtual void buildUserInterface(UI* ui_interface) {
-		ui_interface->openVerticalBox("steganophone");
+		ui_interface->openVerticalBox("SteganoDecoder");
 		ui_interface->closeBox();
 	}
 	
 	virtual void compute(int count, FAUSTFLOAT** RESTRICT inputs, FAUSTFLOAT** RESTRICT outputs) {
 		FAUSTFLOAT* input0 = inputs[0];
-		FAUSTFLOAT* input1 = inputs[1];
 		FAUSTFLOAT* output0 = outputs[0];
 		for (int i0 = 0; i0 < count; i0 = i0 + 1) {
-			iVec1[0] = 1;
-			float fTemp0 = ((1 - iVec1[1]) ? 0.0f : fConst1 + fRec1[1]);
-			fRec1[0] = fTemp0 - std::floor(fTemp0);
-			fRec3[0] = static_cast<float>(input1[i0]) - fConst9 * (fConst8 * fRec3[2] + fConst3 * fRec3[1]);
-			fRec2[0] = fConst9 * (fRec3[2] + fRec3[0] + 2.0f * fRec3[1]) - fConst7 * (fConst5 * fRec2[2] + fConst3 * fRec2[1]);
-			fRec5[0] = static_cast<float>(input0[i0]) - fConst38 * (fConst37 * fRec5[1] + fConst29 * fRec5[2] + fConst36 * fRec5[3] + fConst33 * fRec5[4]);
-			fRec4[0] = fConst38 * (fConst44 * fRec5[0] + fConst42 * fRec5[1] + fConst43 * fRec5[2] + fConst42 * fRec5[3] + fConst41 * fRec5[4]) - fConst31 * (fConst30 * fRec4[1] + fConst29 * fRec4[2] + fConst27 * fRec4[3] + fConst23 * fRec4[4]);
-			output0[i0] = static_cast<FAUSTFLOAT>(fConst31 * (fConst44 * fRec4[0] + fConst42 * fRec4[1] + fConst43 * fRec4[2] + fConst42 * fRec4[3] + fConst41 * fRec4[4]) + fConst10 * (fRec2[2] + fRec2[0] + 2.0f * fRec2[1]) * ftbl0mydspSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0f * fRec1[0]), 65535))]);
-			iVec1[1] = iVec1[0];
-			fRec1[1] = fRec1[0];
-			fRec3[2] = fRec3[1];
+			iVec0[0] = 1;
+			float fTemp0 = ((1 - iVec0[1]) ? 0.0f : fConst9 + fRec3[1]);
+			fRec3[0] = fTemp0 - std::floor(fTemp0);
+			fRec4[0] = static_cast<float>(input0[i0]) - fConst15 * (fConst13 * fRec4[2] + fConst11 * fRec4[1]);
+			fRec1[0] = fConst16 * (fRec4[0] - fRec4[2]) * ftbl0mydspSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0f * fRec3[0]), 65535))] - fConst8 * (fConst7 * fRec1[2] + fConst2 * fRec1[1]);
+			fRec0[0] = fConst8 * (fRec1[2] + fRec1[0] + 2.0f * fRec1[1]) - fConst6 * (fConst4 * fRec0[2] + fConst2 * fRec0[1]);
+			output0[i0] = static_cast<FAUSTFLOAT>(fConst17 * (fRec0[2] + fRec0[0] + 2.0f * fRec0[1]));
+			iVec0[1] = iVec0[0];
 			fRec3[1] = fRec3[0];
-			fRec2[2] = fRec2[1];
-			fRec2[1] = fRec2[0];
-			for (int j0 = 4; j0 > 0; j0 = j0 - 1) {
-				fRec5[j0] = fRec5[j0 - 1];
-			}
-			for (int j1 = 4; j1 > 0; j1 = j1 - 1) {
-				fRec4[j1] = fRec4[j1 - 1];
-			}
+			fRec4[2] = fRec4[1];
+			fRec4[1] = fRec4[0];
+			fRec1[2] = fRec1[1];
+			fRec1[1] = fRec1[0];
+			fRec0[2] = fRec0[1];
+			fRec0[1] = fRec0[0];
 		}
 	}
 
@@ -10623,10 +10547,10 @@ struct mydsp : public dsp {
 
 #ifdef FAUST_UIMACROS
 	
-	#define FAUST_FILE_NAME "steganophone.dsp"
+	#define FAUST_FILE_NAME "SteganoDecoder.dsp"
 	#define FAUST_CLASS_NAME "mydsp"
 	#define FAUST_COMPILATION_OPIONS "-a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -uim -single -ftz 0"
-	#define FAUST_INPUTS 2
+	#define FAUST_INPUTS 1
 	#define FAUST_OUTPUTS 1
 	#define FAUST_ACTIVES 0
 	#define FAUST_PASSIVES 0
@@ -10654,7 +10578,7 @@ std::list<GUI*> GUI::fGuiList;
 ztimedmap GUI::gTimedZoneMap;
 #endif
 
-steganophone::steganophone() : AudioStream(FAUST_INPUTS, new audio_block_t*[FAUST_INPUTS])
+SteganoDecoder::SteganoDecoder() : AudioStream(FAUST_INPUTS, new audio_block_t*[FAUST_INPUTS])
 {
 #ifdef NVOICES
     int nvoices = NVOICES;
@@ -10696,7 +10620,7 @@ steganophone::steganophone() : AudioStream(FAUST_INPUTS, new audio_block_t*[FAUS
 #endif
 }
 
-steganophone::~steganophone()
+SteganoDecoder::~SteganoDecoder()
 {
     delete fDSP;
     delete fUI;
@@ -10715,7 +10639,7 @@ steganophone::~steganophone()
 }
 
 template <int INPUTS, int OUTPUTS>
-void steganophone::updateImp(void)
+void SteganoDecoder::updateImp(void)
 {
 #if MIDICTRL
     // Process the MIDI messages received by the Teensy
@@ -10756,14 +10680,14 @@ void steganophone::updateImp(void)
     }
 }
 
-void steganophone::update(void) { updateImp<FAUST_INPUTS, FAUST_OUTPUTS>(); }
+void SteganoDecoder::update(void) { updateImp<FAUST_INPUTS, FAUST_OUTPUTS>(); }
 
-void steganophone::setParamValue(const std::string& path, float value)
+void SteganoDecoder::setParamValue(const std::string& path, float value)
 {
     fUI->setParamValue(path, value);
 }
 
-float steganophone::getParamValue(const std::string& path)
+float SteganoDecoder::getParamValue(const std::string& path)
 {
     return fUI->getParamValue(path);
 }
