@@ -94,10 +94,12 @@ void startDecoding() {
     for (int i = 0; i < 44; i++) fileDecoded.write(0);
     
     queueOutput.begin();
-    
+    monDecodeur.setParamValue("Sync Sequence", 1.0);
+    delay(10);
     // Lancer la lecture du fichier source
     playStego.play("STEGO.WAV");
-    delay(10);
+    delay(1);
+    monDecodeur.setParamValue("Sync Sequence", 0.0);
     isDecoding = true;
   } else {
     Serial.println("Impossible de créer le fichier DECODED.WAV");
