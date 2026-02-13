@@ -34,7 +34,7 @@ void setup() {
   AudioMemory(200);
   audioShield.enable();
   audioShield.inputSelect(AUDIO_INPUT_MIC);
-  audioShield.micGain(13); // in dB
+  audioShield.micGain(19); // in dB
   audioShield.volume(1);
   SPI.setMOSI(SDCARD_MOSI_PIN);
   SPI.setSCK(SDCARD_SCK_PIN);
