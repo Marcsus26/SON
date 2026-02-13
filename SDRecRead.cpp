@@ -118,8 +118,8 @@ void SDRecRead::startEncoding() {
     queueOutput.begin();
     
     // On lance les fichiers un par un avec un petit délai
-    if (playWav2.play("MARIO.WAV")) {
-      Serial.println("Mario OK");
+    if (playWav2.play("CALLMEMAYBE.WAV")) {
+      Serial.println("CALLMEMAYBE OK");
     }
     delay(100); // Laisse le temps au premier fichier de bufferiser
     

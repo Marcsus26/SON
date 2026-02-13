@@ -10370,6 +10370,12 @@ static float mydsp_faustpower2_f(float value) {
 	return value * value;
 }
 static float ftbl0mydspSIG0[65536];
+static float mydsp_faustpower3_f(float value) {
+	return value * value * value;
+}
+static float mydsp_faustpower4_f(float value) {
+	return value * value * value * value;
+}
 
 struct mydsp : public dsp {
 	
@@ -10392,20 +10398,62 @@ struct mydsp : public dsp {
 	float fConst13;
 	float fConst14;
 	float fConst15;
-	float fRec4[3];
 	float fConst16;
+	float fConst17;
+	float fConst18;
+	float fConst19;
+	float fConst20;
+	float fConst21;
+	float fConst22;
+	float fConst23;
+	float fConst24;
+	float fConst25;
+	float fConst26;
+	float fConst27;
+	float fConst28;
+	float fConst29;
+	float fConst30;
+	float fConst31;
+	float fConst32;
+	float fConst33;
+	float fConst34;
+	float fConst35;
+	float fConst36;
+	float fConst37;
+	float fConst38;
+	float fRec5[5];
+	float fConst39;
+	float fConst40;
+	float fRec4[5];
+	float fConst41;
 	float fRec1[3];
 	float fRec0[3];
-	float fConst17;
+	float fVec2[3];
+	float fConst42;
+	float fConst43;
 	
 	mydsp() {
 	}
 	
 	void metadata(Meta* m) { 
+		m->declare("aanl.lib/ADAA2:author", "Dario Sanfilippo");
+		m->declare("aanl.lib/ADAA2:copyright", "Copyright (C) 2021 Dario Sanfilippo     <sanfilippo.dario@gmail.com>");
+		m->declare("aanl.lib/ADAA2:license", "MIT License");
+		m->declare("aanl.lib/hardclip2:author", "Dario Sanfilippo");
+		m->declare("aanl.lib/hardclip2:copyright", "Copyright (C) 2021 Dario Sanfilippo     <sanfilippo.dario@gmail.com>");
+		m->declare("aanl.lib/hardclip2:license", "MIT License");
+		m->declare("aanl.lib/name", "Faust Antialiased Nonlinearities");
+		m->declare("aanl.lib/version", "1.4.2");
 		m->declare("basics.lib/name", "Faust Basic Element Library");
 		m->declare("basics.lib/version", "1.22.0");
 		m->declare("compile_options", "-a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -ct 1 -es 1 -mcd 16 -mdd 1024 -mdy 33 -uim -single -ftz 0");
 		m->declare("filename", "SteganoDecoder.dsp");
+		m->declare("filters.lib/bandpass0_bandstop1:author", "Julius O. Smith III");
+		m->declare("filters.lib/bandpass0_bandstop1:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/bandpass0_bandstop1:license", "MIT-style STK-4.3 license");
+		m->declare("filters.lib/bandpass:author", "Julius O. Smith III");
+		m->declare("filters.lib/bandpass:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/bandpass:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/fir:author", "Julius O. Smith III");
 		m->declare("filters.lib/fir:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/fir:license", "MIT-style STK-4.3 license");
@@ -10418,15 +10466,15 @@ struct mydsp : public dsp {
 		m->declare("filters.lib/lowpass:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/lowpass:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/name", "Faust Filters Library");
-		m->declare("filters.lib/resonbp:author", "Julius O. Smith III");
-		m->declare("filters.lib/resonbp:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
-		m->declare("filters.lib/resonbp:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/tf2:author", "Julius O. Smith III");
 		m->declare("filters.lib/tf2:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/tf2:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/tf2s:author", "Julius O. Smith III");
 		m->declare("filters.lib/tf2s:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
 		m->declare("filters.lib/tf2s:license", "MIT-style STK-4.3 license");
+		m->declare("filters.lib/tf2sb:author", "Julius O. Smith III");
+		m->declare("filters.lib/tf2sb:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/tf2sb:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/version", "1.7.1");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
@@ -10457,7 +10505,7 @@ struct mydsp : public dsp {
 	virtual void instanceConstants(int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<float>(1.92e+05f, std::max<float>(1.0f, static_cast<float>(fSampleRate)));
-		fConst1 = std::tan(6283.1855f / fConst0);
+		fConst1 = std::tan(4712.389f / fConst0);
 		fConst2 = 2.0f * (1.0f - 1.0f / mydsp_faustpower2_f(fConst1));
 		fConst3 = 1.0f / fConst1;
 		fConst4 = (fConst3 + -0.76536685f) / fConst1 + 1.0f;
@@ -10465,15 +10513,41 @@ struct mydsp : public dsp {
 		fConst6 = 1.0f / fConst5;
 		fConst7 = (fConst3 + -1.847759f) / fConst1 + 1.0f;
 		fConst8 = 1.0f / ((fConst3 + 1.847759f) / fConst1 + 1.0f);
-		fConst9 = 1.5e+04f / fConst0;
-		fConst10 = std::tan(47123.89f / fConst0);
-		fConst11 = 2.0f * (1.0f - 1.0f / mydsp_faustpower2_f(fConst10));
-		fConst12 = 1.0f / fConst10;
-		fConst13 = (fConst12 + -0.05f) / fConst10 + 1.0f;
-		fConst14 = (fConst12 + 0.05f) / fConst10 + 1.0f;
-		fConst15 = 1.0f / fConst14;
-		fConst16 = 1.0f / (fConst10 * fConst14);
-		fConst17 = 2e+01f / fConst5;
+		fConst9 = 1.7e+04f / fConst0;
+		fConst10 = std::tan(56548.668f / fConst0);
+		fConst11 = std::sqrt(4.0f * mydsp_faustpower2_f(fConst0) * std::tan(50265.484f / fConst0) * fConst10);
+		fConst12 = mydsp_faustpower2_f(fConst11);
+		fConst13 = 1.0f / fConst0;
+		fConst14 = mydsp_faustpower3_f(fConst13) * fConst12;
+		fConst15 = fConst0 * fConst10;
+		fConst16 = 2.0f * fConst15 - 0.5f * (fConst12 / fConst15);
+		fConst17 = fConst16 * (6.122935f / fConst0 + 1.5307337f * fConst14);
+		fConst18 = mydsp_faustpower2_f(fConst16);
+		fConst19 = mydsp_faustpower2_f(fConst13);
+		fConst20 = mydsp_faustpower4_f(fConst13) * mydsp_faustpower4_f(fConst11);
+		fConst21 = fConst20 + fConst19 * (4.0f * fConst18 + 8.0f * fConst12);
+		fConst22 = fConst21 + (16.0f - fConst17);
+		fConst23 = 3.0614674f * fConst14;
+		fConst24 = 12.24587f / fConst0;
+		fConst25 = 4.0f * fConst20;
+		fConst26 = fConst25 + fConst16 * (fConst24 - fConst23) + -64.0f;
+		fConst27 = 6.0f * fConst20 + (96.0f - fConst19 * (8.0f * fConst18 + 16.0f * fConst12));
+		fConst28 = fConst25 + fConst16 * (fConst23 - fConst24) + -64.0f;
+		fConst29 = fConst21 + fConst17 + 16.0f;
+		fConst30 = 1.0f / fConst29;
+		fConst31 = fConst16 * (14.782072f / fConst0 + 3.695518f * fConst14);
+		fConst32 = fConst21 + (16.0f - fConst31);
+		fConst33 = 7.391036f * fConst14;
+		fConst34 = 29.564144f / fConst0;
+		fConst35 = fConst25 + fConst16 * (fConst34 - fConst33) + -64.0f;
+		fConst36 = fConst25 + fConst16 * (fConst33 - fConst34) + -64.0f;
+		fConst37 = fConst31 + fConst21 + 16.0f;
+		fConst38 = 1.0f / fConst37;
+		fConst39 = fConst19 * fConst18;
+		fConst40 = fConst39 / fConst37;
+		fConst41 = fConst39 / fConst29;
+		fConst42 = 6e+01f / fConst5;
+		fConst43 = 0.33333334f / fConst5;
 	}
 	
 	virtual void instanceResetUserInterface() {
@@ -10486,14 +10560,20 @@ struct mydsp : public dsp {
 		for (int l3 = 0; l3 < 2; l3 = l3 + 1) {
 			fRec3[l3] = 0.0f;
 		}
-		for (int l4 = 0; l4 < 3; l4 = l4 + 1) {
-			fRec4[l4] = 0.0f;
+		for (int l4 = 0; l4 < 5; l4 = l4 + 1) {
+			fRec5[l4] = 0.0f;
 		}
-		for (int l5 = 0; l5 < 3; l5 = l5 + 1) {
-			fRec1[l5] = 0.0f;
+		for (int l5 = 0; l5 < 5; l5 = l5 + 1) {
+			fRec4[l5] = 0.0f;
 		}
 		for (int l6 = 0; l6 < 3; l6 = l6 + 1) {
-			fRec0[l6] = 0.0f;
+			fRec1[l6] = 0.0f;
+		}
+		for (int l7 = 0; l7 < 3; l7 = l7 + 1) {
+			fRec0[l7] = 0.0f;
+		}
+		for (int l8 = 0; l8 < 3; l8 = l8 + 1) {
+			fVec2[l8] = 0.0f;
 		}
 	}
 	
@@ -10528,18 +10608,44 @@ struct mydsp : public dsp {
 			iVec0[0] = 1;
 			float fTemp0 = ((1 - iVec0[1]) ? 0.0f : fConst9 + fRec3[1]);
 			fRec3[0] = fTemp0 - std::floor(fTemp0);
-			fRec4[0] = static_cast<float>(input0[i0]) - fConst15 * (fConst13 * fRec4[2] + fConst11 * fRec4[1]);
-			fRec1[0] = fConst16 * (fRec4[0] - fRec4[2]) * ftbl0mydspSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0f * fRec3[0]), 65535))] - fConst8 * (fConst7 * fRec1[2] + fConst2 * fRec1[1]);
+			fRec5[0] = static_cast<float>(input0[i0]) - fConst38 * (fConst36 * fRec5[1] + fConst27 * fRec5[2] + fConst35 * fRec5[3] + fConst32 * fRec5[4]);
+			fRec4[0] = fConst40 * (4.0f * fRec5[0] - 8.0f * fRec5[2] + 4.0f * fRec5[4]) - fConst30 * (fConst28 * fRec4[1] + fConst27 * fRec4[2] + fConst26 * fRec4[3] + fConst22 * fRec4[4]);
+			fRec1[0] = fConst41 * (4.0f * fRec4[0] - 8.0f * fRec4[2] + 4.0f * fRec4[4]) * ftbl0mydspSIG0[std::max<int>(0, std::min<int>(static_cast<int>(65536.0f * fRec3[0]), 65535))] - fConst8 * (fConst7 * fRec1[2] + fConst2 * fRec1[1]);
 			fRec0[0] = fConst8 * (fRec1[2] + fRec1[0] + 2.0f * fRec1[1]) - fConst6 * (fConst4 * fRec0[2] + fConst2 * fRec0[1]);
-			output0[i0] = static_cast<FAUSTFLOAT>(fConst17 * (fRec0[2] + fRec0[0] + 2.0f * fRec0[1]));
+			float fTemp1 = fRec0[2] + fRec0[0] + 2.0f * fRec0[1];
+			fVec2[0] = fTemp1;
+			float fTemp2 = fConst42 * (fVec2[1] - fVec2[2]);
+			float fTemp3 = fConst42 * fVec2[2];
+			int iTemp4 = (fTemp3 <= 1.0f) & (fTemp3 >= -1.0f);
+			float fTemp5 = 0.5f * mydsp_faustpower2_f(fTemp3);
+			float fTemp6 = static_cast<float>((fTemp3 > 0.0f) - (fTemp3 < 0.0f));
+			float fTemp7 = fConst42 * fVec2[1];
+			int iTemp8 = (fTemp7 <= 1.0f) & (fTemp7 >= -1.0f);
+			float fTemp9 = static_cast<float>((fTemp7 > 0.0f) - (fTemp7 < 0.0f));
+			float fTemp10 = 0.5f * mydsp_faustpower2_f(fTemp7);
+			float fTemp11 = ((iTemp8) ? fTemp10 : fConst42 * fVec2[1] * fTemp9 + -0.5f);
+			float fTemp12 = ((iTemp8) ? 0.33333334f * mydsp_faustpower3_f(fTemp7) : fTemp9 * (fTemp10 + -0.16666667f));
+			float fTemp13 = 1.2e+02f * fVec2[1];
+			float fTemp14 = mydsp_faustpower2_f(fConst42 * (fTemp1 - fVec2[1]));
+			float fTemp15 = fConst42 * fTemp1;
+			int iTemp16 = (fTemp15 <= 1.0f) & (fTemp15 >= -1.0f);
+			float fTemp17 = 0.5f * mydsp_faustpower2_f(fTemp15);
+			float fTemp18 = static_cast<float>((fTemp15 > 0.0f) - (fTemp15 < 0.0f));
+			output0[i0] = static_cast<FAUSTFLOAT>(((fTemp14 <= 0.001f) ? 0.5f * std::max<float>(-1.0f, std::min<float>(1.0f, fConst43 * (6e+01f * fTemp1 + fTemp13))) : (fConst42 * fTemp1 * (((iTemp16) ? fTemp17 : fConst42 * fTemp1 * fTemp18 + -0.5f) - fTemp11) + fTemp12 - ((iTemp16) ? 0.33333334f * mydsp_faustpower3_f(fTemp15) : fTemp18 * (fTemp17 + -0.16666667f))) / fTemp14) + ((mydsp_faustpower2_f(fTemp2) <= 0.001f) ? 0.5f * std::max<float>(-1.0f, std::min<float>(1.0f, fConst43 * (fTemp13 + 6e+01f * fVec2[2]))) : (fTemp12 + fConst42 * fVec2[2] * (((iTemp4) ? fTemp5 : fConst42 * fVec2[2] * fTemp6 + -0.5f) - fTemp11) - ((iTemp4) ? 0.33333334f * mydsp_faustpower3_f(fTemp3) : fTemp6 * (fTemp5 + -0.16666667f))) / mydsp_faustpower2_f(-fTemp2)));
 			iVec0[1] = iVec0[0];
 			fRec3[1] = fRec3[0];
-			fRec4[2] = fRec4[1];
-			fRec4[1] = fRec4[0];
+			for (int j0 = 4; j0 > 0; j0 = j0 - 1) {
+				fRec5[j0] = fRec5[j0 - 1];
+			}
+			for (int j1 = 4; j1 > 0; j1 = j1 - 1) {
+				fRec4[j1] = fRec4[j1 - 1];
+			}
 			fRec1[2] = fRec1[1];
 			fRec1[1] = fRec1[0];
 			fRec0[2] = fRec0[1];
 			fRec0[1] = fRec0[0];
+			fVec2[2] = fVec2[1];
+			fVec2[1] = fVec2[0];
 		}
 	}
 

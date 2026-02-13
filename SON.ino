@@ -34,7 +34,7 @@ void setup() {
   AudioMemory(200);
   audioShield.enable();
   audioShield.inputSelect(AUDIO_INPUT_MIC);
-  audioShield.micGain(10); // in dB
+  audioShield.micGain(13); // in dB
   audioShield.volume(1);
   SPI.setMOSI(SDCARD_MOSI_PIN);
   SPI.setSCK(SDCARD_SCK_PIN);
@@ -50,25 +50,26 @@ void setup() {
 void loop() {
   // A. On met à jour l'état du bouton physique
   boutonCapture.update();
-
+  if (!sDRecRead.isEncoding) {
   // Respond to button presses
-  if (boutonCapture.fallingEdge()) {
-    if (sDRecRead.mode == 0) {
-      sDRecRead.playWav2.stop();
-      Serial.println("Started recording");
-      sDRecRead.startRecording();
+    if (boutonCapture.fallingEdge()) {
+      if (sDRecRead.mode == 0) {
+        sDRecRead.playWav2.stop();
+        Serial.println("Started recording");
+        sDRecRead.startRecording();
+      }
+      else { 
+        if (sDRecRead.mode == 1) {
+          Serial.println("Stopped recording");
+          sDRecRead.stopRecording();
+          delay(100);
+          sDRecRead.startEncoding();
+        }
+      }
     }
-    else { 
-      if (sDRecRead.mode == 1) {
-        Serial.println("Stopped recording");
-        sDRecRead.stopRecording();
-        delay(100);
-        sDRecRead.startEncoding();
-    }
-    }
-    }
-    if (sDRecRead.mode == 1) {
-      sDRecRead.continueRecording();
+  }
+  if (sDRecRead.mode == 1) {
+    sDRecRead.continueRecording();
   }
   if (sDRecRead.isEncoding) {
 
@@ -89,9 +90,6 @@ void loop() {
       // 2. Vérification de la fin (DÉPLACÉ ICI)
       // On vérifie si les fichiers ont fini de jouer UNIQUEMENT si on est en train d'encoder
       if (!sDRecRead.playWav2.isPlaying()) {
-          sDRecRead.playWav1.stop();
-          delay(100);
-          sDRecRead.playWav2.stop();
         Serial.println("Fin de lecture détectée, fermeture du fichier.");
         AudioNoInterrupts();
         sDRecRead.stopEncoding(); // Ici isEncoding repasse à false, arrêtant ce bloc
