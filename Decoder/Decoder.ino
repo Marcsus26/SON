@@ -48,6 +48,8 @@ void setup() {
   audioShield.micGain(30);
   audioShield.volume(0.93); // On met fort car le signal décodé est souvent faible
 
+  Serial.println("Hello");
+
   // Init SD Card
   /*SPI.setMOSI(SDCARD_MOSI_PIN);
   SPI.setSCK(SDCARD_SCK_PIN);
