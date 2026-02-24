@@ -13,9 +13,10 @@
 #define SDCARD_SCK_PIN   13  // Teensy 4 ignores this, uses pin 13
 
 // --- 3. OBJETS AUDIO ---
-AudioPlaySdWav           playStego;      // Lecteur du fichier crypté
-AudioRecordQueue         queueOutput;    // Enregistreur du signal décodé
+//AudioPlaySdWav           playStego;      // Lecteur du fichier crypté
+//AudioRecordQueue         queueOutput;    // Enregistreur du signal décodé
 AudioOutputI2S           i2s_out;        // Monitoring casque
+AudioInputI2S in;
 AudioControlSGTL5000     audioShield;
 
 // Ton objet Faust (Vérifie le nom de la classe dans ton fichier decoder.h)
@@ -26,11 +27,12 @@ SteganoDecoder monDecodeur;
 
 // A. Lecture -> Décodeur
 // On envoie le fichier STEGO dans le décodeur
-AudioConnection          patch1(playStego, 0, monDecodeur, 0);
+AudioConnection          patch1(in, 0, monDecodeur, 0);
 
 // B. Décodeur -> Enregistreur
 // On enregistre le résultat (la voix extraite)
-AudioConnection          patch2(monDecodeur, 0, queueOutput, 0);
+AudioConnection          patch2(monDecodeur, 0, i2s_out, 0);
+AudioConnection          patch3(monDecodeur, 0, i2s_out, 1);
 
 // --- VARIABLES ---
 File fileDecoded;
@@ -42,10 +44,12 @@ void setup() {
 
   // Init Audio Shield
   audioShield.enable();
-  audioShield.volume(0.8); // On met fort car le signal décodé est souvent faible
+  audioShield.inputSelect(AUDIO_INPUT_MIC);
+  audioShield.micGain(30);
+  audioShield.volume(0.93); // On met fort car le signal décodé est souvent faible
 
   // Init SD Card
-  SPI.setMOSI(SDCARD_MOSI_PIN);
+  /*SPI.setMOSI(SDCARD_MOSI_PIN);
   SPI.setSCK(SDCARD_SCK_PIN);
   
   if (!(SD.begin(SDCARD_CS_PIN))) {
@@ -55,11 +59,11 @@ void setup() {
   Serial.println("Prêt au décodage.");
   delay(100);
   
-  startDecoding();
+  startDecoding();*/
 }
 
 void loop() {
-  if (isDecoding) {
+  /*if (isDecoding) {
     // 1. Écriture continue sur la SD
     if (queueOutput.available() >= 2) {
       byte buffer[512];
@@ -76,12 +80,12 @@ void loop() {
     if (!playStego.isPlaying()) {
       stopDecoding();
     }
-  }
+  }*/
 }
 
 // --- FONCTIONS DE PILOTAGE ---
 
-void startDecoding() {
+/*void startDecoding() {
   Serial.println("Début du décodage vers DECODED.WAV...");
   
   // Nettoyage ancien fichier
@@ -151,4 +155,4 @@ void writeWavHeader(File file, unsigned long fileSize) {
   file.write((byte*)&bitsPerSample, 2);
   file.print("data");
   file.write((byte*)&subChunk2Size, 4);
-}
+}*/

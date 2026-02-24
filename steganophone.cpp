@@ -10499,7 +10499,7 @@ struct mydsp : public dsp {
 	virtual void instanceConstants(int sample_rate) {
 		fSampleRate = sample_rate;
 		fConst0 = std::min<float>(1.92e+05f, std::max<float>(1.0f, static_cast<float>(fSampleRate)));
-		fConst1 = 1.7e+04f / fConst0;
+		fConst1 = 1.8e+04f / fConst0;
 		fConst2 = std::tan(942.4778f / fConst0);
 		fConst3 = mydsp_faustpower2_f(fConst2);
 		fConst4 = 2.0f * (1.0f - 1.0f / fConst3);
@@ -10518,7 +10518,7 @@ struct mydsp : public dsp {
 		fConst17 = (fConst14 + -1.847759f) / fConst12 + 1.0f;
 		fConst18 = 1.0f / ((fConst14 + 1.847759f) / fConst12 + 1.0f);
 		fConst19 = 1.0f / (fConst3 * fConst10);
-		fConst20 = 0.3f / (fConst3 * fConst7);
+		fConst20 = 0.4f / (fConst3 * fConst7);
 		fConst21 = std::tan(47123.89f / fConst0);
 		fConst22 = 2.0f * (1.0f - 1.0f / mydsp_faustpower2_f(fConst21));
 		fConst23 = 1.0f / fConst21;
@@ -10533,7 +10533,7 @@ struct mydsp : public dsp {
 		fConst32 = 1.0f / ((fConst23 + 1.8793852f) / fConst21 + 1.0f);
 		fConst33 = 1.0f - fConst23;
 		fConst34 = 1.0f / (fConst23 + 1.0f);
-		fConst35 = 0.6f / fConst25;
+		fConst35 = 0.5f / fConst25;
 	}
 	
 	virtual void instanceResetUserInterface() {

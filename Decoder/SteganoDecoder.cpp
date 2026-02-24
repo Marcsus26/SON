@@ -10513,9 +10513,9 @@ struct mydsp : public dsp {
 		fConst6 = 1.0f / fConst5;
 		fConst7 = (fConst3 + -1.847759f) / fConst1 + 1.0f;
 		fConst8 = 1.0f / ((fConst3 + 1.847759f) / fConst1 + 1.0f);
-		fConst9 = 1.7e+04f / fConst0;
-		fConst10 = std::tan(56548.668f / fConst0);
-		fConst11 = std::sqrt(4.0f * mydsp_faustpower2_f(fConst0) * std::tan(50265.484f / fConst0) * fConst10);
+		fConst9 = 1.8e+04f / fConst0;
+		fConst10 = std::tan(59690.26f / fConst0);
+		fConst11 = std::sqrt(4.0f * mydsp_faustpower2_f(fConst0) * std::tan(53407.074f / fConst0) * fConst10);
 		fConst12 = mydsp_faustpower2_f(fConst11);
 		fConst13 = 1.0f / fConst0;
 		fConst14 = mydsp_faustpower3_f(fConst13) * fConst12;
@@ -10546,7 +10546,7 @@ struct mydsp : public dsp {
 		fConst39 = fConst19 * fConst18;
 		fConst40 = fConst39 / fConst37;
 		fConst41 = fConst39 / fConst29;
-		fConst42 = 6e+01f / fConst5;
+		fConst42 = 1.5e+02f / fConst5;
 		fConst43 = 0.33333334f / fConst5;
 	}
 	
@@ -10625,13 +10625,13 @@ struct mydsp : public dsp {
 			float fTemp10 = 0.5f * mydsp_faustpower2_f(fTemp7);
 			float fTemp11 = ((iTemp8) ? fTemp10 : fConst42 * fVec2[1] * fTemp9 + -0.5f);
 			float fTemp12 = ((iTemp8) ? 0.33333334f * mydsp_faustpower3_f(fTemp7) : fTemp9 * (fTemp10 + -0.16666667f));
-			float fTemp13 = 1.2e+02f * fVec2[1];
+			float fTemp13 = 3e+02f * fVec2[1];
 			float fTemp14 = mydsp_faustpower2_f(fConst42 * (fTemp1 - fVec2[1]));
 			float fTemp15 = fConst42 * fTemp1;
 			int iTemp16 = (fTemp15 <= 1.0f) & (fTemp15 >= -1.0f);
 			float fTemp17 = 0.5f * mydsp_faustpower2_f(fTemp15);
 			float fTemp18 = static_cast<float>((fTemp15 > 0.0f) - (fTemp15 < 0.0f));
-			output0[i0] = static_cast<FAUSTFLOAT>(((fTemp14 <= 0.001f) ? 0.5f * std::max<float>(-1.0f, std::min<float>(1.0f, fConst43 * (6e+01f * fTemp1 + fTemp13))) : (fConst42 * fTemp1 * (((iTemp16) ? fTemp17 : fConst42 * fTemp1 * fTemp18 + -0.5f) - fTemp11) + fTemp12 - ((iTemp16) ? 0.33333334f * mydsp_faustpower3_f(fTemp15) : fTemp18 * (fTemp17 + -0.16666667f))) / fTemp14) + ((mydsp_faustpower2_f(fTemp2) <= 0.001f) ? 0.5f * std::max<float>(-1.0f, std::min<float>(1.0f, fConst43 * (fTemp13 + 6e+01f * fVec2[2]))) : (fTemp12 + fConst42 * fVec2[2] * (((iTemp4) ? fTemp5 : fConst42 * fVec2[2] * fTemp6 + -0.5f) - fTemp11) - ((iTemp4) ? 0.33333334f * mydsp_faustpower3_f(fTemp3) : fTemp6 * (fTemp5 + -0.16666667f))) / mydsp_faustpower2_f(-fTemp2)));
+			output0[i0] = static_cast<FAUSTFLOAT>(((fTemp14 <= 0.001f) ? 0.5f * std::max<float>(-1.0f, std::min<float>(1.0f, fConst43 * (1.5e+02f * fTemp1 + fTemp13))) : (fConst42 * fTemp1 * (((iTemp16) ? fTemp17 : fConst42 * fTemp1 * fTemp18 + -0.5f) - fTemp11) + fTemp12 - ((iTemp16) ? 0.33333334f * mydsp_faustpower3_f(fTemp15) : fTemp18 * (fTemp17 + -0.16666667f))) / fTemp14) + ((mydsp_faustpower2_f(fTemp2) <= 0.001f) ? 0.5f * std::max<float>(-1.0f, std::min<float>(1.0f, fConst43 * (fTemp13 + 1.5e+02f * fVec2[2]))) : (fTemp12 + fConst42 * fVec2[2] * (((iTemp4) ? fTemp5 : fConst42 * fVec2[2] * fTemp6 + -0.5f) - fTemp11) - ((iTemp4) ? 0.33333334f * mydsp_faustpower3_f(fTemp3) : fTemp6 * (fTemp5 + -0.16666667f))) / mydsp_faustpower2_f(-fTemp2)));
 			iVec0[1] = iVec0[0];
 			fRec3[1] = fRec3[0];
 			for (int j0 = 4; j0 > 0; j0 = j0 - 1) {
