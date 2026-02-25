@@ -45,7 +45,7 @@ void setup() {
   // Init Audio Shield
   audioShield.enable();
   audioShield.inputSelect(AUDIO_INPUT_MIC);
-  audioShield.micGain(30);
+  audioShield.micGain(27);
   audioShield.volume(0.93); // On met fort car le signal décodé est souvent faible
 
   Serial.println("Hello");
